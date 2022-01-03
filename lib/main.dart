@@ -2,18 +2,34 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MaterialApp(
-    home: Scaffold(
-      body: const ListaTransferencias(),
+  runApp(const BytebankApp());
+}
+
+class BytebankApp extends StatelessWidget {
+  const BytebankApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: Scaffold(
+        body: FormularioTransferencia(),
+      ),
+    );
+  }
+}
+
+class FormularioTransferencia extends StatelessWidget {
+  const FormularioTransferencia({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
       appBar: AppBar(
-        title: const Text("Transferências"),
+        title: const Text("Criando Transferências"),
       ),
-      floatingActionButton: const FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: null,
-      ),
-    ),
-  ));
+      body: Text("olá mundo"),
+    );
+  }
 }
 
 class ListaTransferencias extends StatelessWidget {
@@ -21,19 +37,27 @@ class ListaTransferencias extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ItemTransferencias(Transferencias(100, "2649-8")),
-        ItemTransferencias(Transferencias(200, "2649-8")),
-        ItemTransferencias(Transferencias(300, "2649-8")),
-        ItemTransferencias(Transferencias(1500.0, "2649-8")),
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Transferências"),
+      ),
+      body: Column(
+        children: [
+          ItemTransferencias(Transferencias(100, "2649-8")),
+          ItemTransferencias(Transferencias(200, "2649-8")),
+          ItemTransferencias(Transferencias(300, "2649-8")),
+          ItemTransferencias(Transferencias(1500.0, "2649-8")),
+        ],
+      ),
+      floatingActionButton: const FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: null,
+      ),
     );
   }
 }
 
 class ItemTransferencias extends StatelessWidget {
-
   final Transferencias _transferencias;
 
   ItemTransferencias(this._transferencias);
