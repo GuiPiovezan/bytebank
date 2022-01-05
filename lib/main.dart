@@ -1,9 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const BytebankApp());
-}
+void main() => runApp(BytebankApp());
 
 class BytebankApp extends StatelessWidget {
   const BytebankApp({Key? key}) : super(key: key);
@@ -19,16 +16,56 @@ class BytebankApp extends StatelessWidget {
 }
 
 class FormularioTransferencia extends StatelessWidget {
-  const FormularioTransferencia({Key? key}) : super(key: key);
+  final TextEditingController _controladorCampoNumeroConta =
+      TextEditingController();
+  final TextEditingController _controladorCampoValor = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Criando Transferências"),
-      ),
-      body: Text("olá mundo"),
-    );
+        appBar: AppBar(
+          title: Text('Criando Transferência'),
+        ),
+        body: Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: TextField(
+                controller: _controladorCampoNumeroConta,
+                style: TextStyle(fontSize: 24.0),
+                decoration: const InputDecoration(
+                    labelText: 'Número da conta', hintText: '0000'),
+                keyboardType: TextInputType.number,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: TextField(
+                controller: _controladorCampoValor,
+                style: TextStyle(fontSize: 24.0),
+                decoration: const InputDecoration(
+                    icon: Icon(Icons.monetization_on),
+                    labelText: 'Valor',
+                    hintText: '0.00'),
+                keyboardType: TextInputType.number,
+              ),
+            ),
+            ElevatedButton(
+              child: Text('Confirmar'),
+              onPressed: () {
+                debugPrint('clicou no confirmar');
+                final int? numeroConta =
+                    int.tryParse(_controladorCampoNumeroConta.text);
+                final double? valor =
+                    double.tryParse(_controladorCampoValor.text);
+                if (numeroConta != null && valor != null) {
+                  final transferenciaCriada = Transferencia(valor, numeroConta);
+                  debugPrint('$transferenciaCriada');
+                }
+              },
+            )
+          ],
+        ));
   }
 }
 
@@ -39,42 +76,47 @@ class ListaTransferencias extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Transferências"),
+        title: Text('Transferências'),
       ),
       body: Column(
-        children: [
-          ItemTransferencias(Transferencias(100, "2649-8")),
-          ItemTransferencias(Transferencias(200, "2649-8")),
-          ItemTransferencias(Transferencias(300, "2649-8")),
-          ItemTransferencias(Transferencias(1500.0, "2649-8")),
+        children: <Widget>[
+          ItemTransferencia(Transferencia(100.0, 1000)),
+          ItemTransferencia(Transferencia(200.0, 2000)),
+          ItemTransferencia(Transferencia(300.0, 3000)),
         ],
       ),
-      floatingActionButton: const FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
         child: Icon(Icons.add),
-        onPressed: null,
       ),
     );
   }
 }
 
-class ItemTransferencias extends StatelessWidget {
-  final Transferencias _transferencias;
+class ItemTransferencia extends StatelessWidget {
+  final Transferencia _transferencia;
 
-  ItemTransferencias(this._transferencias);
+  ItemTransferencia(this._transferencia);
 
   @override
   Widget build(BuildContext context) {
     return Card(
         child: ListTile(
-            leading: Icon(Icons.monetization_on),
-            title: Text(_transferencias.valor.toString()),
-            subtitle: Text(_transferencias.numeroConta)));
+      leading: const Icon(Icons.monetization_on),
+      title: Text(_transferencia.valor.toString()),
+      subtitle: Text(_transferencia.numeroConta.toString()),
+    ));
   }
 }
 
-class Transferencias {
+class Transferencia {
   final double valor;
-  final String numeroConta;
+  final int numeroConta;
 
-  Transferencias(this.valor, this.numeroConta);
+  Transferencia(this.valor, this.numeroConta);
+
+  @override
+  String toString() {
+    return 'Transferencia{valor: $valor, numeroConta: $numeroConta}';
+  }
 }
