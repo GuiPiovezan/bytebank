@@ -13,9 +13,18 @@ class BytebankApp extends StatelessWidget {
   }
 }
 
-class FormularioTransferencia extends StatelessWidget {
+class FormularioTransferencia extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+   return FormularioTransferenciaState();
+  }
+
+}
+
+class FormularioTransferenciaState extends State<FormularioTransferencia>{
+
   final TextEditingController _controladorCampoNumeroConta =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _controladorCampoValor = TextEditingController();
 
   @override
@@ -24,24 +33,26 @@ class FormularioTransferencia extends StatelessWidget {
         appBar: AppBar(
           title: Text('Criando Transferência'),
         ),
-        body: Column(
-          children: <Widget>[
-            TextInputPersonalizado(
-              controlador: _controladorCampoNumeroConta,
-              rotulo: 'Número da conta',
-              placeholder: '000',
-            ),
-            TextInputPersonalizado(
-              controlador: _controladorCampoValor,
-              rotulo: 'Valor',
-              placeholder: '00.00',
-              iconn: Icons.monetization_on,
-            ),
-            ElevatedButton(
-              child: Text('Confirmar'),
-              onPressed: () => _criaTransferencia(context),
-            )
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              TextInputPersonalizado(
+                controlador: _controladorCampoNumeroConta,
+                rotulo: 'Número da conta',
+                placeholder: '000',
+              ),
+              TextInputPersonalizado(
+                controlador: _controladorCampoValor,
+                rotulo: 'Valor',
+                placeholder: '00.00',
+                iconn: Icons.monetization_on,
+              ),
+              ElevatedButton(
+                child: Text('Confirmar'),
+                onPressed: () => _criaTransferencia(context),
+              )
+            ],
+          ),
         ));
   }
 
@@ -56,6 +67,7 @@ class FormularioTransferencia extends StatelessWidget {
       Navigator.pop(context, transferenciaCriada);
     }
   }
+
 }
 
 class TextInputPersonalizado extends StatelessWidget {
@@ -89,28 +101,42 @@ class TextInputPersonalizado extends StatelessWidget {
   }
 }
 
-class ListaTransferencias extends StatelessWidget {
+class ListaTransferencias extends StatefulWidget {
+  final List<Transferencia> _transferencias = [];
+
+  @override
+  State<StatefulWidget> createState() {
+    return ListaTransferenciasState();
+  }
+}
+
+class ListaTransferenciasState extends State<ListaTransferencias> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Transferências'),
       ),
-      body: Column(
-        children: <Widget>[
-          ItemTransferencia(Transferencia(100.0, 1000)),
-          ItemTransferencia(Transferencia(200.0, 2000)),
-          ItemTransferencia(Transferencia(300.0, 3000)),
-        ],
-      ),
+      body: ListView.builder(
+          itemCount: widget._transferencias.length,
+          itemBuilder: (context, index) {
+            return ItemTransferencia(widget._transferencias[index]);
+          }),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
           //Função de um possível retorno de eventos ou dados da tela navegada
-         final Future future =  Navigator.push(context, MaterialPageRoute(builder: (context) {
+          final Future<Transferencia?> future =
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
             return FormularioTransferencia();
           }));
-         future.then((transferenciaRecebida) => debugPrint('Chegou no then $transferenciaRecebida'));
+          future.then((transferenciaRecebida) {
+            if (transferenciaRecebida != null) {
+              setState(() {
+                widget._transferencias.add(transferenciaRecebida);
+              });
+            }
+          });
         },
       ),
     );
