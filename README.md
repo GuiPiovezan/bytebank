@@ -1,6 +1,6 @@
 # bytebank
 
-A new Flutter project.
+Um novo projeto Flutter para adquirir conceitos iniciais sobre a tecnologia.
 
 ## Getting Started
 
